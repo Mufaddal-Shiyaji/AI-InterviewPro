@@ -1,0 +1,18 @@
+1. add more varied training data and target values
+
+
+things that could potentially improve:
+
+1. use larger datasets
+2. use more target features of the datasets like 
+
+Prolongation: Elongated syllable (e.g., M[mmm]ommy)
+Block: Gasps for air or stuttered pauses
+Sound Repetition: Repeated syllables (e.g., I [pr-pr-pr-]prepared dinner)
+Word Repetition: The same word or phrase is repeated (e.g., I made [made] dinner)
+No Stuttered Words: Confirmation that none of the above is true.
+Interjection: Common filler words such as "um" or "uh" or person-specific filler words that
+
+Use weights for each of these features to get a score for confience/clarity
+
+
