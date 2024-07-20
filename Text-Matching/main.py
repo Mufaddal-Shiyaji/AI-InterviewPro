@@ -4,12 +4,16 @@ from scipy.spatial import distance
 
 nlp = spacy.load("en_core_web_lg")
 
+candidate_answer =  "Regarding your inquiry, I recommend adopting a microservices approach with Docker for containerization and Kubernetes for orchestration, ensuring scalability and fault tolerance. Additionally, incorporating a RESTful API design with Node.js and Express.js facilitates smooth service communication, enhancing development flexibility. Integrating CI/CD pipelines like Jenkins or GitLab CI further streamlines software delivery for swift iterations and top-notch releases."
+correct_answer =  "In response to your question, I would propose employing a microservices architecture leveraging containerization with Docker and orchestration through Kubernetes. This setup ensures scalability, fault tolerance, and efficient resource utilization. Additionally, implementing a RESTful API design pattern using technologies like Node.js and Express.js facilitates seamless communication between services, promoting agility and flexibility in development. Furthermore, integrating continuous integration/continuous deployment (CI/CD) pipelines with tools such as Jenkins or GitLab CI streamlines the software delivery process, enabling rapid iterations and ensuring high-quality releases."
+
 def preprocess_text(text):
     doc = nlp(text) 
     tokens = [token.lemma_.lower() for token in doc if not token.is_stop and not token.is_punct]
     preprocessed_text = " ".join(tokens)
     return preprocessed_text
 
+print(preprocess_text(correct_answer))
 def calculate_sentence_embedding(sentence):
     preprocessed_sentence = preprocess_text(sentence)
     doc = nlp(preprocessed_sentence)
@@ -20,8 +24,7 @@ def calculate_sentence_embedding(sentence):
     else:
         return np.zeros_like(nlp.vocab.vectors[0]) 
 
-candidate_answer =  "Regarding your inquiry, I recommend adopting a microservices approach with Docker for containerization and Kubernetes for orchestration, ensuring scalability and fault tolerance. Additionally, incorporating a RESTful API design with Node.js and Express.js facilitates smooth service communication, enhancing development flexibility. Integrating CI/CD pipelines like Jenkins or GitLab CI further streamlines software delivery for swift iterations and top-notch releases."
-correct_answer =  "In response to your question, I would propose employing a microservices architecture leveraging containerization with Docker and orchestration through Kubernetes. This setup ensures scalability, fault tolerance, and efficient resource utilization. Additionally, implementing a RESTful API design pattern using technologies like Node.js and Express.js facilitates seamless communication between services, promoting agility and flexibility in development. Furthermore, integrating continuous integration/continuous deployment (CI/CD) pipelines with tools such as Jenkins or GitLab CI streamlines the software delivery process, enabling rapid iterations and ensuring high-quality releases."
+
 
 dataset = [
     {"candidate_answer": candidate_answer, 

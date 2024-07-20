@@ -1,2 +1,1 @@
-
-candidate_answer =  "We d
+print(candidate_answer)

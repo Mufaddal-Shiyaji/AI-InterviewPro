@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InterviewInterface</title>
+  </head>
+  <body>
+    <video id="camera" autoplay></video>
+    <button onclick="startRecording()" id="vidstart">Start</button>
+    <button onclick="stopRecording()" id="vidstop">Stop</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io();
+      let mediaRecorder;
+      let chunks = [];
+
+      const startRecording = async () => {
+        console.log("Recording started");
+        try {
+          const mediaStreamObj = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+
+          document.getElementById("camera").srcObject = mediaStreamObj;
+
+          mediaRecorder = new MediaRecorder(mediaStreamObj);
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) {
+              chunks.push(e.data);
+              socket.emit("mediaChunk", e.data);
+            }
+          };
+
+          mediaRecorder.start(100); // Record in 1 second chunks
+        } catch (err) {
+          console.error("Error accessing media devices.", err);
+        }
+      };
+
+      const stopRecording = () => {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.onstop = async () => {
+            console.log("onstop called");
+            socket.emit("mediaComplete");
+            chunks = []; // Clear the chunks array for the next recording
+            console.log("onstop finished");
+          };
+          mediaRecorder.stop();
+          console.log("Recording stopped");
+        } else {
+          console.warn("Recording not started or already stopped.");
+        }
+      };
+
+      socket.on("serverMessage", (msg) => {
+        console.log("Server:", msg);
+        const item = document.createElement("p");
+        item.textContent = msg;
+        document.body.appendChild(item);
+      });
+
+      socket.on("connect_error", (err) => {
+        console.error("Connection error:", err);
+      });
+
+      socket.on("error", (err) => {
+        console.error("Socket error:", err);
+      });
+    </script>
+  </body>
+</html>
